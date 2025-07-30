@@ -1,0 +1,16 @@
+﻿@page
+
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserMgr
+@inject SignInManager<IdentityUser> SignInMgr
+
+@model TaskManager.Pages.ProfileModel
+@{
+	var user = await UserMgr.GetUserAsync(User);
+	var roles = await UserMgr.GetRolesAsync(user);
+}
+
+<h2>My Profile</h2>
+<p><strong>Username:</strong> @user.UserName</p>
+<p><strong>Email:</strong> @user.Email</p>
+<p><strong>Role:</strong> @string.Join(", ", roles)</p>

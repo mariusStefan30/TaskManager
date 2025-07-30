@@ -12,6 +12,7 @@
           crossorigin="anonymous" 
      />
 
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TaskManager.styles.css" asp-append-version="true" />
@@ -40,6 +41,28 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="TaskItems" asp-action="Create">Adaugă Task</a>
                         </li>
+
+                        @*Aici Incepe Login/Logout*@
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-page="/Profile">My Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <form method="post" asp-area="Identity" asp-page="/Account/Logout" id="LogoutForm">
+                                    <button type="submit" class="nav-link btn btn-link">Logout</button>    
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login" >Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -68,5 +91,38 @@
 
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- little scriot JS which make AJAX -->
+    @section Scripts {
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          document.querySelectorAll(".toggle-done").forEach(cb => {
+            cb.addEventListener("change", function() {
+              var id = this.getAttribute("data-id");
+              fetch('/TaskItems/ToggleDone', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json',
+                           'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() },
+                body: JSON.stringify({ id: id })
+              })
+              .then(res => {
+                if (!res.ok) throw new Error("Network response was not ok");
+                return res.json();
+              })
+              .then(data => {
+                // opțional: schimbă stilul rândului
+                var row = this.closest('tr');
+                if (data.isDone)
+                  row.classList.add('table-success');
+                else
+                  row.classList.remove('table-success');
+              })
+              .catch(console.error);
+            });
+          });
+        });
+      </script>
+}
+
 </body>
 </html>
