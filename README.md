@@ -108,3 +108,7 @@ Adaugare Identity si JWT
 Roluri si Politici / Delete endpoint protejat , doar admin poate sterge un task
 
 Securitate UI / Am implementat login/logout si tasks nu poate fi accesat fara sa fi autentificat
+
+--Testare is Observabilitate
+
+Unit Tests si Xunit pe TAskItemsControllerService, pe TaskItemsApiController si pe AuthController
