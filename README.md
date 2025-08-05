@@ -112,3 +112,5 @@ Securitate UI / Am implementat login/logout si tasks nu poate fi accesat fara sa
 --Testare is Observabilitate
 
 Unit Tests si Xunit pe TAskItemsControllerService, pe TaskItemsApiController si pe AuthController
+
+Add Api integrations tests, stilll two of them are not working.
