@@ -1,5 +1,123 @@
 # TaskManager
 
+# 🗂️ TaskManager – ASP.NET Core MVC + API + xUnit
+
+**TaskManager** este o aplicație ASP.NET Core MVC + Web API pentru gestionarea task-urilor, construită ca proiect de practică personală. Scopul a fost să consolidez concepte de backend, API REST, autentificare, testare și observabilitate.
+
+---
+
+## 📌 Funcționalități implementate
+
+- ✅ Adăugare, editare, ștergere și listare taskuri
+- ✅ Autentificare JWT + roluri (User, Manager, Admin)
+- ✅ API REST pentru `TaskItems` (`TaskItemsApiController`)
+- ✅ Protecție cu `[Authorize]` pentru anumite rute
+- ✅ Bază de date: EF Core + SQL Server
+- ✅ Logger integrat (Serilog + Console)
+- ✅ Teste unitare și de integrare (xUnit)
+
+---
+
+## 🧪 Testare
+
+- ✅ Teste **unitare** (pentru Business Logic / Controllers)
+- ✅ Teste **de integrare** (pentru API-uri)
+- ✅ Teste scrise cu **xUnit**
+- ⚠️ În acest moment, testele de integrare scriu în baza de date reală deoarece implementarea `CustomWebApplicationFactory` cu InMemoryDb a fost temporar suspendată (incompatibilitate cu infrastructura actuală).
+
+> ❗ Scopul principal a fost să acopăr logica de integrare end-to-end. Cleanup-ul complet al bazei de date poate fi implementat ulterior (ex: `EnsureDeleted()` per test).
+
+---
+
+## 📊 Observabilitate
+
+- ✅ Logging cu **Serilog**
+  - Logging în `TaskItemsApiController` (GET, POST, PUT, DELETE)
+  - Evenimente logate cu nivele corecte (Info, Warning, Error)
+- 🔜 Integrare ulterioară planificată cu:
+  - **Seq** (pentru vizualizare loguri)
+  - **Application Insights** (pentru monitorizare)
+
+---
+
+## 🏗️ Tehnologii folosite
+
+- ASP.NET Core MVC 7
+- ASP.NET Core Web API
+- Entity Framework Core
+- SQL Server
+- Identity + JWT
+- xUnit
+- Serilog
+- Swashbuckle (Swagger)
+- InMemory EF Core (parțial configurat pentru testare)
+
+---
+
+## 🧠 Ce am învățat
+
+- Organizarea controllerelor MVC vs API
+- Configurarea `WebApplicationFactory` pentru testare
+- Lucrul cu `ILogger<T>` și înregistrarea evenimentelor
+- Crearea unei politici de autorizare (`RequireManagerOrAdmin`)
+- Seed și reset pentru baza de date
+- Diagnosticul și depanarea erorilor legate de servicii EF Core și testare
+
+---
+
+## ⚙️ Rulare locală
+
+1. Clonează proiectul:
+   ```bash
+   git clone https://github.com/mariusStefan30/TaskManager.git
+
+
+
+   dotnet run
+
+
+
+
+   dotnet test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Iată un exempliu detaliat de **definire a obiectivelor SMART** pentru planul tău de upskilling:
 
 ---
