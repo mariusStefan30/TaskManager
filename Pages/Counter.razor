@@ -1,0 +1,42 @@
+﻿@page "/counter"
+@inject HttpClient Http
+
+<h3>Task-uri active</h3>
+
+@if(loading)
+{
+	<p>Se incarca...</p>
+}
+else{
+	<p><strong>@activeCount</strong> Taskuri active</p>
+}
+
+@code {
+	private int activeCount;
+	private bool loading = true;
+
+	public class TaskItem
+	{
+		public int Id {get; set;}
+		public string Title { get; set; }
+		public bool IsDone { get; set; }
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			var allTasks = await Http.GetFromJsonAsync<List<TaskItem>>("api/TaskItemsApi");
+			activeCount = allTasks.Count(Task => !Task.IsDone);
+
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Eroare la preluarea taskurilor: {ex.Message}");
+		}
+		finally
+		{
+			loading = false;
+		}
+	}
+}

@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI;
 using Serilog;
+using Microsoft.AspNetCore.Components;
 
 
 
@@ -137,6 +138,21 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+//Adauga serviciile Blazor
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddScoped<HttpClient>(sp =>
+{
+	var navigationManager = sp.GetRequiredService<NavigationManager>();
+	return new HttpClient
+	{
+		BaseAddress = new Uri(navigationManager.BaseUri)
+	};
+});
+
+builder.Services.AddHttpClient();
+
+
 
 var app = builder.Build();
 
@@ -164,6 +180,9 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapBlazorHub();
+app.MapFallbackToPage("/Host");
 
 app.MapRazorPages();// mapam treseele Identity UI (/Identity/Account/Login, etc)
 app.MapControllers(); //Maps your API controller too

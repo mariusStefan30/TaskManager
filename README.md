@@ -65,6 +65,24 @@
 
 ---
 
+## Am mai adaugat:
+
+✅Funcționalitatea Blazor este integrată cu succes în aplicația ASP.NET Core MVC.
+✅ Counter-ul Blazor funcționează și acum afișează numărul de taskuri active preluate din API.
+✅ Depășit cu succes obstacole precum:
+
+Rutarea către _Host
+
+Injectarea corectă a HttpClient
+
+Erori de binding (@DefaultLayout)
+
+Configurarea MainLayout
+
+Consumarea API-ului
+
+---
+
 ## ⚙️ Rulare locală
 
 1. Clonează proiectul:
