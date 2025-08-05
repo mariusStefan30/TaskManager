@@ -113,4 +113,9 @@ Securitate UI / Am implementat login/logout si tasks nu poate fi accesat fara sa
 
 Unit Tests si Xunit pe TAskItemsControllerService, pe TaskItemsApiController si pe AuthController
 
-Add Api integrations tests, stilll two of them are not working.
+Am adaugat Api integrations tests, stilll two of them are not working.
+
+Am adaugat Adaugă Serilog în TaskManager
+
+TO FIX: ApiIntegrationsTest scrie in baza de date principala cand ruleaza testele
+

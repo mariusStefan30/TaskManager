@@ -7,16 +7,26 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI;
+using Serilog;
 
 
 
-//pentru a rulaapi test succesful cu correct base directory
 //var builder = WebApplication.CreateBuilder(args);
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
 	ContentRootPath = AppContext.BaseDirectory,
 	Args = args
 });
+
+//configure serilog ca logger global
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.Seq("http://localhost:5341") //daca folosesti Seq
+    .CreateLogger();
+
+builder.Host.UseSerilog(); // integrate cu Host-ul
 
 
 // Add services to the container. EF Core
