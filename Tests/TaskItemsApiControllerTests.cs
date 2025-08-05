@@ -10,20 +10,21 @@ namespace TaskManager.Tests
 {
 	public class TaskItemsApiControllerTests
 	{
-		private static AppDbContext CreateInMemoryContext(string dbName)
-		{
-			var options = new DbContextOptionsBuilder<AppDbContext>()
-				.UseInMemoryDatabase(Guid.NewGuid().ToString())
-				.Options;
-			return new AppDbContext(options);
-		}
+		//am schimbat cu TestDbContextFactory
+		//private static AppDbContext CreateInMemoryContext(string dbName)
+		//{
+		//	var options = new DbContextOptionsBuilder<AppDbContext>()
+		//		.UseInMemoryDatabase(Guid.NewGuid().ToString())
+		//		.Options;
+		//	return new AppDbContext(options);
+		//}
 
 
 		[Fact]
 		public async Task Create_AddsTask_AndReturnsCreatedAtAction()
 		{
 			// Arrange
-			var context = CreateInMemoryContext("TestDb_Post");
+			var context = TestDbContextFactory.CreateInMemoryContext("TestDb_Post");
 			var controller = new TaskItemsApiController(context);
 
 			var newTask = new TaskItem { Title = "Test task", Description = "Test desc" };
@@ -43,7 +44,7 @@ namespace TaskManager.Tests
 		public async Task Get_ReturnsTaskItem_WhenFound()
 		{
 			// Arrange
-			var context = CreateInMemoryContext("TestDb_Get");
+			var context = TestDbContextFactory.CreateInMemoryContext("TestDb_Get");
 			var task = new TaskItem { Title = "Get Test", Description = "Test desc" };
 			context.Tasks.Add(task);
 			await context.SaveChangesAsync();
@@ -64,7 +65,7 @@ namespace TaskManager.Tests
 		public async Task Update_ValidTask_ReturnsNoContent() //Broken, o sa il resolv alta data
 		{
 			// Arrange
-			var context = CreateInMemoryContext("TestDb_Put");
+			var context = TestDbContextFactory.CreateInMemoryContext("TestDb_Put");
 			var task = new TaskItem { Title = "Old Title", Description = "Old Desc" };
 			context.Tasks.Add(task);
 			await context.SaveChangesAsync();
@@ -93,7 +94,7 @@ namespace TaskManager.Tests
 		public async Task Update_IdMismatch_ReturnsBadRequest()
 		{
 			// Arrange
-			var context = CreateInMemoryContext("TestDb_Put_BadRequest");
+			var context = TestDbContextFactory.CreateInMemoryContext("TestDb_Put_BadRequest");
 			var task = new TaskItem { Title = "Test", Description = "Test" };
 			context.Tasks.Add(task);
 			await context.SaveChangesAsync();
@@ -119,7 +120,7 @@ namespace TaskManager.Tests
 		public async Task Get_ReturnsNotFound_WhenTaskDoesNotExist()
 		{
 			// Arrange
-			var context = CreateInMemoryContext("TestDb_Get_NotFound");
+			var context = TestDbContextFactory.CreateInMemoryContext("TestDb_Get_NotFound");
 			var controller = new TaskItemsApiController(context);
 
 			// Act

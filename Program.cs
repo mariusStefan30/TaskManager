@@ -9,7 +9,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI;
 
 
-var builder = WebApplication.CreateBuilder(args);
+
+//pentru a rulaapi test succesful cu correct base directory
+//var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+	ContentRootPath = AppContext.BaseDirectory,
+	Args = args
+});
+
 
 // Add services to the container. EF Core
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -154,3 +162,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+public partial class Program { };
