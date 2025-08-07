@@ -34,7 +34,7 @@
 - ✅ Logging cu **Serilog**
   - Logging în `TaskItemsApiController` (GET, POST, PUT, DELETE)
   - Evenimente logate cu nivele corecte (Info, Warning, Error)
-- 🔜 Integrare ulterioară planificată cu:
+-  Integrare ulterioară planificată cu:
   - **Seq** (pentru vizualizare loguri)
   - **Application Insights** (pentru monitorizare)
 
@@ -168,7 +168,7 @@ Iată un exempliu detaliat de **definire a obiectivelor SMART** pentru planul t�
     4. Proiect cu autentificare JWT,
     5. Proiect cu suite de teste (xUnit + in-memory DB),
     6. Proiect CI/CD pe GitHub Actions/Azure DevOps.
-  * Fiecare proiect va avea **README** detaliat și va primi **cel puțin 5 stele** din partea colegilor (feedback intern).”
+  * Fiecare proiect va avea **README** detaliat.
 
 ### 3. Atingibile (Achievable)
 
@@ -251,7 +251,7 @@ Unit Tests si Xunit pe TAskItemsControllerService, pe TaskItemsApiController si 
 
 Am adaugat Api integrations tests, stilll two of them are not working.
 
-Am adaugat Adaugă Serilog în TaskManager
+Am adaugat Serilog în TaskManager
 
 TO FIX: ApiIntegrationsTest scrie in baza de date principala cand ruleaza testele
 

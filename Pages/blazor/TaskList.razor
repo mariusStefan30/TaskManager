@@ -1,0 +1,122 @@
+﻿
+
+@page "/blazor/tasks"
+@inject HttpClient Http
+@inject IJSRuntime Js
+
+<h3>Lista Task-uri</h3>
+
+@if (loading)
+{
+	<p><em>Se încarcă task-urile…</em></p>
+}
+else if (loadError is not null)
+{
+	<div class="alert alert-danger">@loadError</div>
+}
+else
+{
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Title</th>
+				<th>Description</th>
+				<th>Finalizat?</th>
+				<th>Acțiuni</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var t in tasks)
+			{
+				<tr class="@(t.IsDone ? "table-success" : null)">
+					<td>@t.Title</td>
+					<td>@t.Description</td>
+					<td>
+						<input type="checkbox"
+							   checked="@t.IsDone"
+							   @onchange="() => ToggleDoneAsync(t)" />
+					</td>
+					<td>
+						<a class="btn btn-sm btn-primary"
+						   href="@($"/task/edit/{t.Id}")">
+							Edit
+						</a>
+						<button class="btn btn-sm btn-danger ms-1"
+								@onclick="() => DeleteAsync(t.Id)">
+							Delete
+						</button>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<a class="btn btn-success" href="/task/edit">
+		Adaugă Task Nou
+	</a>
+}
+
+@code {
+	// 1) Fields must be declared before markup uses them
+	List<TaskDto> tasks = new();
+	bool loading = true;
+	string? loadError;
+
+	// 2) Model matching your API
+	class TaskDto
+	{
+		public int Id { get; set; }
+		public string Title { get; set; } = "";
+		public string Description { get; set; } = "";
+		public bool IsDone { get; set; }
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			tasks = await Http.GetFromJsonAsync<List<TaskDto>>("api/TaskItemsApi")
+					?? new List<TaskDto>();
+		}
+		catch (Exception ex)
+		{
+			loadError = $"Eroare la încărcare: {ex.Message}";
+		}
+		finally
+		{
+			loading = false;
+		}
+	}
+
+	async Task ToggleDoneAsync(TaskDto t)
+	{
+		var old = t.IsDone;
+		t.IsDone = !old;
+
+		var resp = await Http.PutAsJsonAsync(
+			$"api/TaskItemsApi/{t.Id}", t);
+
+		if (!resp.IsSuccessStatusCode)
+		{
+			t.IsDone = old;
+			await Js.InvokeVoidAsync("alert", "Nu am putut actualiza task-ul");
+		}
+	}
+
+	async Task DeleteAsync(int id)
+	{
+		var confirmed = await Js.InvokeAsync<bool>(
+			"confirm", "Ștergi task-ul?");
+		if (!confirmed) return;
+
+		var resp = await Http.DeleteAsync($"api/TaskItemsApi/{id}");
+		if (resp.IsSuccessStatusCode)
+		{
+			tasks.RemoveAll(x => x.Id == id);
+		}
+		else
+		{
+			await Js.InvokeVoidAsync("alert", "Ștergere eșuată");
+		}
+	}
+}

@@ -181,8 +181,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapBlazorHub();
-app.MapFallbackToPage("/Host");
+app.MapBlazorHub("/blazor");
+app.MapFallbackToPage("/blazor/Host");
 
 app.MapRazorPages();// mapam treseele Identity UI (/Identity/Account/Login, etc)
 app.MapControllers(); //Maps your API controller too
