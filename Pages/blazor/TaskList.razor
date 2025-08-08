@@ -1,4 +1,4 @@
-﻿
+﻿@* 
 
 @page "/blazor/tasks"
 @inject HttpClient Http
@@ -119,4 +119,81 @@ else
 			await Js.InvokeVoidAsync("alert", "Ștergere eșuată");
 		}
 	}
+}
+ *@
+
+@* (exemplu UI cu Fluxor) *@
+
+@* ruta pentru listă *@
+@page "/blazor/tasks"
+
+@using Fluxor
+@using TaskManager.BlazorState.Tasks
+@using TaskManager.Models.TaskDatatransferobject
+@inject IState<TasksState> State
+@inject IDispatcher Dispatcher
+<h3>Lista Task-uri</h3>
+
+@if (State.Value.IsLoading)                    @* afișăm loading *@
+{
+    <p><em>Se încarcă...</em></p>
+}
+else if (!string.IsNullOrWhiteSpace(State.Value.Error))  @* afișăm eroarea *@
+{
+    <div class="alert alert-danger">@State.Value.Error</div>
+}
+else                                           @* afișăm tabelul *@
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Finalizat?</th>
+                <th>Acțiuni</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var t in State.Value.Items)
+        {
+            <tr>
+                <td>@t.Title</td>
+                <td>@t.Description</td>
+                <td>
+                    <input type="checkbox"
+                           checked="@t.IsDone"
+                           @onchange="@(e => OnToggle(t, (bool)e.Value!))" />
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-danger"
+                            @onclick="() => Dispatcher.Dispatch(new DeleteTaskAction(t.Id))">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<button class="btn btn-primary"
+        @onclick="() => AddDummy()">Adaugă Task (demo)</button>
+
+@code {
+    protected override void OnInitialized()
+    {
+        // La prima intrare pe pagină încărcăm task-urile
+        Dispatcher.Dispatch(new LoadTasksAction());
+    }
+
+    // Bifare/debifare din UI -> trimitem ToggleDoneAction
+    void OnToggle(TaskDto task, bool isDone)
+        => Dispatcher.Dispatch(new ToggleDoneAction(task.Id, isDone));
+
+    // Mic demo: adaugă rapid un task la apăsarea butonului
+    void AddDummy()
+    {
+        var dto = new TaskDto(0, "Nou din Blazor", "Creat de pe UI", false);
+        Dispatcher.Dispatch(new AddTaskAction(dto));
+    }
 }

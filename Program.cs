@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI;
 using Serilog;
 using Microsoft.AspNetCore.Components;
+using System.Security.Cryptography;
+using Fluxor.Blazor.Web;
+using Fluxor.Blazor.Web.ReduxDevTools;
+using Fluxor;
 
 
 
@@ -152,7 +156,26 @@ builder.Services.AddScoped<HttpClient>(sp =>
 
 builder.Services.AddHttpClient();
 
+// 1) Fluxor: scans the assembly for [FeatureState], [ReducerMethod], [EffectMethod]
+builder.Services.AddFluxor(options =>
+{
+	options.ScanAssemblies(typeof(Program).Assembly);   // scanează proiectul actual
+#if DEBUG
+	options.UseReduxDevTools();                         // opțional, dacă ai Redux DevTools
+#endif
+});
 
+// 2) HttpClient pentru Blazor Server (dacă nu îl ai deja configurat)
+builder.Services.AddHttpClient("default", client =>
+{
+	// Baza relativă pentru apeluri "api/TaskItemsApi"
+	// Pune aici host-ul tău dacă nu rulezi pe același domeniu/port.
+	client.BaseAddress = new Uri("https://localhost:5103/");
+});
+
+// 3) Furnizăm HttpClient din factory (tokenul "default")
+builder.Services.AddScoped(sp =>
+	sp.GetRequiredService<IHttpClientFactory>().CreateClient("default"));
 
 var app = builder.Build();
 

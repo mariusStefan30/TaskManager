@@ -81,6 +81,19 @@ Configurarea MainLayout
 
 Consumarea API-ului
 
+
+## Am mai adaugat:
+
+(State Management) și să o adăugăm peste ce ai deja în TaskManager. Pentru Blazor, cea mai sănătoasă cale de a învăța Flux/Redux-style este Fluxor (port Redux pentru Blazor). Îți dau un setup mic, curat, care:
+
+ține lista de task-uri într-un store global
+
+face fetch din API prin effects
+
+sincronizează crea/edita/șterge/Toggle IsDone** dintr-un singur loc
+
+componentele Blazor doar observă store-ul și trimit actions (fără HttpClient direct)
+
 ---
 
 ## ⚙️ Rulare locală
