@@ -1,0 +1,49 @@
+﻿@page "/blazor/task-add"
+@using Fluxor
+@using TaskManager.Models
+@using TaskManager.BlazorState.Tasks
+@inject IDispatcher Dispatcher
+@inject NavigationManager Nav
+@using TaskManager.Models.TaskDatatransferobject
+
+<h3>Adaugă Task</h3>
+
+<EditForm Model="_form" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <InputText class="form-control" @bind-Value="_form.Title" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <InputTextArea class="form-control" @bind-Value="_form.Description" />
+    </div>
+    <button class="btn btn-success" type="submit">Salvează</button>
+    <a class="btn btn-secondary ms-2" href="/tasks">Înapoi</a>
+</EditForm>
+
+@code {
+    // model mutabil pentru binding
+    private TaskForm _form = new();
+
+    private void Save()
+    {
+        // mapăm form → DTO immutable
+        var dto = new TaskDto(
+            Id: 0,                          // serverul va genera Id
+            Title: _form.Title,
+            Description: _form.Description,
+            IsDone: false
+        );
+
+        Dispatcher.Dispatch(new CreateTaskAction(dto));
+        Nav.NavigateTo("/tasks");
+    }
+
+    // View-model pentru formular
+    public sealed class TaskForm
+    {
+        public string Title { get; set; } = "";
+        public string? Description { get; set; }
+    }
+}

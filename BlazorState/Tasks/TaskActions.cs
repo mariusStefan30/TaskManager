@@ -12,6 +12,14 @@ namespace TaskManager.BlazorState.Tasks
 	// Încărcarea a eșuat -> trimitem mesajul de eroare
 	public record LoadTasksFailureAction(string Error);
 
+	//Create actions
+	//Create
+	public record CreateTaskAction(TaskDto NewTask);
+	//Success
+	public record CreateTaskSuccessAction(TaskDto Created);
+	//Failure
+	public record CreateTaskFailureAction(string Error);
+
 	// User a bifat/debifat "IsDone" în UI (optimistic update în reducer)
 	public record ToggleDoneAction(int Id, bool IsDone);
 

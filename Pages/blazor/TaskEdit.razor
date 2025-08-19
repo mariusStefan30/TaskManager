@@ -1,0 +1,111 @@
+﻿@page "/task-edit/{Id:int}"
+
+@using Fluxor
+@using TaskManager.BlazorState.Tasks
+@using TaskManager.Models.TaskDatatransferobject   <!-- pentru TaskDto -->
+@inject IState<TasksState> State
+@inject IDispatcher Dispatcher
+@inject NavigationManager Nav
+
+<h3>Editează Task</h3>
+
+@if (_form is null)
+{
+    <p><em>Se încarcă...</em></p>
+}
+else
+{
+    <EditForm Model="_form" OnValidSubmit="Save">
+        <DataAnnotationsValidator />
+
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <InputText class="form-control" @bind-Value="_form.Title" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <InputTextArea class="form-control" @bind-Value="_form.Description" />
+        </div>
+
+        <div class="form-check mb-3">
+            <InputCheckbox class="form-check-input" @bind-Value="_form.IsDone" />
+            <label class="form-check-label">Finalizat</label>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Salvează</button>
+        <a class="btn btn-secondary ms-2" href="/tasks">Înapoi</a>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private TaskForm? _form;
+    private EventHandler? _subscription;
+
+    protected override void OnInitialized()
+    {
+        // actualizează formularul când vin datele în store
+        _subscription = (_, __) =>
+        {
+            var dto = State.Value.Items.FirstOrDefault(x => x.Id == Id);
+            if (dto is not null)
+            {
+                _form = new TaskForm
+                    {
+                        Title = dto.Title,
+                        Description = dto.Description,
+                        IsDone = dto.IsDone
+                    };
+                InvokeAsync(StateHasChanged);
+            }
+        };
+        State.StateChanged += _subscription!;
+    }
+
+    protected override void OnParametersSet()
+    {
+        // dacă store-ul e gol, cere încărcarea
+        if (!State.Value.Items.Any())
+            Dispatcher.Dispatch(new LoadTasksAction());
+
+        var dto = State.Value.Items.FirstOrDefault(x => x.Id == Id);
+        if (dto is not null)
+        {
+            _form = new TaskForm
+                {
+                    Title = dto.Title,
+                    Description = dto.Description,
+                    IsDone = dto.IsDone
+                };
+        }
+    }
+
+    void Save()
+    {
+        if (_form is null) return;
+
+        // mapăm view-modelul mutabil -> DTO imutabil
+        var updated = new TaskDto(Id, _form.Title, _form.Description, _form.IsDone);
+
+        // trimite acțiunea (ai deja reducer pentru UpdateTaskSuccessAction)
+        Dispatcher.Dispatch(new UpdateTaskSuccessAction(updated));
+
+        Nav.NavigateTo("/tasks");
+    }
+
+    public void Dispose()
+    {
+        if (_subscription is not null)
+            State.StateChanged -= _subscription;
+    }
+
+    // view-model mutabil pentru binding
+    private sealed class TaskForm
+    {
+        public string Title { get; set; } = "";
+        public string? Description { get; set; }
+        public bool IsDone { get; set; }
+    }
+}

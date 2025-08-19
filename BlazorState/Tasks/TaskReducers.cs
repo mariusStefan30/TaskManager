@@ -21,6 +21,26 @@ namespace TaskManager.BlazorState.Tasks
 		public static TasksState Reduce(TasksState state, LoadTasksFailureAction action)
 			=> state with { IsLoading = false, Error = action.Error };
 
+		//Adaugam create task reducer for the create task actions
+		//Optimistic start: setam doar loading
+		[ReducerMethod]
+		public static TasksState Reduce(TasksState state, CreateTaskAction _)
+			=> state with { IsLoading = true, Error = null };
+
+		//Dupa raspunsul API adaugam itemul in lista
+		[ReducerMethod]
+		public static TasksState Reduce(TasksState state, CreateTaskSuccessAction action)
+			=> state with
+			{
+				IsLoading = false,
+				Items = state.Items.Append(action.Created).ToArray(),
+				Error = null
+			};
+
+		[ReducerMethod]
+		public static TasksState Reduce(TasksState state, CreateTaskFailureAction action)
+			=> state with { IsLoading = false, Error = action.Error };
+
 		// 4) Optimistic toggle (UI răspunde imediat, efectul va confirma)
 		[ReducerMethod]
 		public static TasksState Reduce(TasksState state, ToggleDoneAction action)

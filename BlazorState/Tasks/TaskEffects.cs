@@ -2,18 +2,22 @@
 using System.Net.Http.Json;
 using Fluxor;
 using TaskManager.Models.TaskDatatransferobject;
+using Microsoft.AspNetCore.Components;
 
 namespace TaskManager.BlazorState.Tasks
 {
 	public class TaskEffects
 	{
 		private readonly HttpClient _http;        // pentru apelurile la API
-		private readonly IState<TasksState> _state; // putem citi state-ul curent (ex. pentru Toggle)
+        private readonly IState<TasksState> _state; // putem citi state-ul curent (ex. pentru Toggle)
+		private readonly NavigationManager _nav;
 
-		public TaskEffects(HttpClient http, IState<TasksState> state)
+
+		public TaskEffects(HttpClient http, IState<TasksState> state, NavigationManager nav)
 		{
 			_http = http;
 			_state = state;
+			_nav = nav;
 		}
 
 		// 1) Efect pentru LoadTasksAction
@@ -31,6 +35,31 @@ namespace TaskManager.BlazorState.Tasks
 				dispatcher.Dispatch(new LoadTasksFailureAction(ex.Message));
 			}
 		}
+
+		//Efect pentru CreateTaskAction
+		[EffectMethod]
+		public async Task Handle(CreateTaskAction action, IDispatcher dispatcher)
+		{
+            try
+            {
+                // pe Server nu ai mereu BaseAddress – seteaz-o din site
+                _http.BaseAddress ??= new Uri(_nav.BaseUri);
+
+                var resp = await _http.PostAsJsonAsync("api/TaskItemsApi", action.NewTask);
+                resp.EnsureSuccessStatusCode();
+
+                var created = await resp.Content.ReadFromJsonAsync<TaskDto>(
+                    new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                dispatcher.Dispatch(new CreateTaskSuccessAction(created!));
+                dispatcher.Dispatch(new LoadTasksAction());
+                _nav.NavigateTo("/tasks");
+            }
+            catch (Exception ex)
+            {
+                dispatcher.Dispatch(new CreateTaskFailureAction(ex.Message));
+            }
+        }
 
 		// 2) Efect pentru ToggleDoneAction -> PUT către API
 		[EffectMethod]
