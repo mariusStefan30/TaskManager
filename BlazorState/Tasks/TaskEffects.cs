@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using Fluxor;
 using TaskManager.Models.TaskDatatransferobject;
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics;
 
 namespace TaskManager.BlazorState.Tasks
 {
@@ -22,10 +23,11 @@ namespace TaskManager.BlazorState.Tasks
 
 		// 1) Efect pentru LoadTasksAction
 		[EffectMethod]
-		public async Task Handle(LoadTasksAction action, IDispatcher dispatcher)
+		public async Task Handle(LoadTasksAction _, IDispatcher dispatcher)
 		{
 			try
 			{
+                Debug.WriteLine("Effect LoadTasksAction HIT"); // vezi în Output/Console
 				// GET /api/TaskItemsApi -> listă de TaskDto
 				var items = await _http.GetFromJsonAsync<List<TaskDto>>("api/TaskItemsApi");
 				dispatcher.Dispatch(new LoadTasksSuccessAction(items ?? new List<TaskDto>()));
@@ -45,7 +47,7 @@ namespace TaskManager.BlazorState.Tasks
                 // pe Server nu ai mereu BaseAddress – seteaz-o din site
                 _http.BaseAddress ??= new Uri(_nav.BaseUri);
 
-                var resp = await _http.PostAsJsonAsync("api/TaskItemsApi", action.NewTask);
+                var resp = await _http.PostAsJsonAsync("api/TaskItemsApi", action.NewItem);
                 resp.EnsureSuccessStatusCode();
 
                 var created = await resp.Content.ReadFromJsonAsync<TaskDto>(
@@ -53,7 +55,7 @@ namespace TaskManager.BlazorState.Tasks
 
                 dispatcher.Dispatch(new CreateTaskSuccessAction(created!));
                 dispatcher.Dispatch(new LoadTasksAction());
-                _nav.NavigateTo("/tasks");
+                _nav.NavigateTo("/blazor/tasks");
             }
             catch (Exception ex)
             {
@@ -97,25 +99,5 @@ namespace TaskManager.BlazorState.Tasks
 				dispatcher.Dispatch(new LoadTasksAction()); // fallback la refresh
 		}
 
-		// 4) Efect pentru AddTaskAction -> POST, apoi AddTaskSuccessAction
-		[EffectMethod]
-		public async Task Handle(AddTaskAction action, IDispatcher dispatcher)
-		{
-			var resp = await _http.PostAsJsonAsync("api/TaskItemsApi", action.NewItem);
-			if (resp.IsSuccessStatusCode)
-			{
-				var created = await resp.Content.ReadFromJsonAsync<TaskDto>(
-					new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-				if (created is not null)
-					dispatcher.Dispatch(new AddTaskSuccessAction(created));
-				else
-					dispatcher.Dispatch(new LoadTasksAction());
-			}
-			else
-			{
-				dispatcher.Dispatch(new LoadTasksAction());
-			}
-		}
 	}
 }

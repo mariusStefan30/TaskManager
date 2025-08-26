@@ -8,7 +8,7 @@ namespace TaskManager.BlazorState.Tasks
 	{
 		// 1) Load -> punem loading=true și curățăm eroarea
 		[ReducerMethod]
-		public static TasksState Reduce(TasksState state, LoadTasksAction _)
+		public static TasksState Reduce(TasksState state, LoadTasksAction action)
 			=> state with { IsLoading = true, Error = null };
 
 		// 2) LoadSuccess -> punem itemele și loading=false
@@ -71,9 +71,5 @@ namespace TaskManager.BlazorState.Tasks
 					.ToArray()
 			};
 
-		// 7) Add confirmat (adăugăm elementul nou)
-		[ReducerMethod]
-		public static TasksState Reduce(TasksState state, AddTaskSuccessAction action)
-			=> state with { Items = state.Items.Append(action.Created).ToArray() };
 	}
 }

@@ -95,6 +95,18 @@ sincronizează crea/edita/șterge/Toggle IsDone** dintr-un singur loc
 componentele Blazor doar observă store-ul și trimit actions (fără HttpClient direct)
 
 ---
+## Am mai adaugat:
+
+
+Bootstrap în proiect, facem un UI curat + componente mici reutilizabile (fără tooling nou):
+
+Navbar & layout unificat , modificat Shared/MainLayout.razor.
+
+Mini-bibliotecă de componente cu TMCard, TMButton, ConfirmDialog, TaskRow.
+
+Listă cu aspect “card” + componente in TaskList si pagina de “Add” în card.
+
+---
 
 ## ⚙️ Rulare locală
 

@@ -1,0 +1,24 @@
+﻿@using TaskManager.Models.TaskDatatransferobject
+<h3>TaskRow</h3>
+
+<tr class="@RowClass">
+    <td class="fw-medium">@Item.Title</td>
+    <td class="text-muted">@Item.Description</td>
+    <td class="text-center">
+        <input type="checkbox" checked="@Item.IsDone" @onchange="OnToggleChanged" />
+    </td>
+    <td class="text-nowrap">
+        <TMButton Color="outline-danger" OnClick="() => RequestDelete.InvokeAsync(Item.Id)">Delete</TMButton>
+    </td>
+</tr>
+
+@code {
+    [Parameter] public TaskDto Item { get; set; } = default!;
+    [Parameter] public EventCallback<(int id, bool done)> ToggleDone { get; set; }
+    [Parameter] public EventCallback<int> RequestDelete { get; set; }
+
+    string RowClass => Item.IsDone ? "table-success" : "";
+
+    Task OnToggleChanged(ChangeEventArgs e)
+      => ToggleDone.InvokeAsync((Item.Id, e.Value is bool b && b));
+}

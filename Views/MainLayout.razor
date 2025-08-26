@@ -43,11 +43,12 @@
 </div> *@
 
 @inherits LayoutComponentBase
+@using TaskManager.Pages.blazor
 
 <header>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/blazor/tasks">Blazor TaskManager</a>
+    <nav class="navbar navbar-expand-lg bg-primary navbar-dark shadow-sm">
+    <div class="container">
+            <a class="navbar-brand fw-semibold" href="/blazor/tasks">Blazor TaskManager</a>
       <button class="navbar-toggler"
               type="button"
               data-bs-toggle="collapse"
@@ -58,7 +59,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+                <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <a class="nav-link"
                      href="/blazor/tasks"
@@ -67,10 +68,10 @@
             </a>
           </li>
           <li class="nav-item">
-            <NavLink class="nav-link"
+            <a class="nav-link"
                      href="task-add">
               Adaugă Task
-            </NavLink>
+            </a>
           </li>
           <li class="nav-item">
             <a class="nav-link"
@@ -87,3 +88,9 @@
 <div class="container">
   @Body
 </div>
+
+<footer class="border-top py-3 mt-5">
+    <div class="container text-muted small">
+        © 2025 – Blazor TaskManager – <a href="/Privacy">Privacy</a>
+    </div>
+</footer>

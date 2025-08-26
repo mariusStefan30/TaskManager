@@ -130,13 +130,15 @@ else
 @using Fluxor
 @using TaskManager.BlazorState.Tasks
 @using TaskManager.Models.TaskDatatransferobject
+@using TaskManager.Components.UI
 @inject IState<TasksState> State
 @inject IDispatcher Dispatcher
+@inject Fluxor.IStore Store
 <h3>Lista Task-uri</h3>
 
 @if (State.Value.IsLoading)                    @* afișăm loading *@
 {
-    <p><em>Se încarcă...</em></p>
+	<div class="text-muted"><span class="spinner-border spinner-border-sm me-2"></span>Se încarcă…</div>
 }
 else if (!string.IsNullOrWhiteSpace(State.Value.Error))  @* afișăm eroarea *@
 {
@@ -144,47 +146,54 @@ else if (!string.IsNullOrWhiteSpace(State.Value.Error))  @* afișăm eroarea *@
 }
 else                                           @* afișăm tabelul *@
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Finalizat?</th>
-                <th>Acțiuni</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var t in State.Value.Items)
-        {
-            <tr>
-                <td>@t.Title</td>
-                <td>@t.Description</td>
-                <td>
-                    <input type="checkbox"
-                           checked="@t.IsDone"
-                           @onchange="@(e => OnToggle(t, (bool)e.Value!))" />
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-danger"
-                            @onclick="() => Dispatcher.Dispatch(new DeleteTaskAction(t.Id))">
-                        Delete
-                    </button>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
-
+	<div class="d-flex justify-content-between align-items-center mb-3">
+		<div class="small text-muted">@State.Value.Items.Count task-uri</div>
+		<a class="btn btn-primary" href="/blazor/task-add">Adaugă Task</a>
+	</div>
+	<div class="table-responsive">
+		<table class="table align-middle">
+			<thead>
+				<tr>
+					<th>Title</th>
+					<th>Description</th>
+					<th class="text-center">Finalizat?</th>
+					<th class="text-nowrap">Acțiuni</th>
+				</tr>
+			</thead>
+			<tbody>
+			@foreach (var t in State.Value.Items)
+			{
+				<TaskRow Item="t"
+                   ToggleDone="@(args => Dispatcher.Dispatch(new ToggleDoneAction(args.id, args.done)))"
+                   RequestDelete="@(id => Dispatcher.Dispatch(new DeleteTaskAction(id)))" />
+			}
+			
+			</tbody>
+		</table>
+	</div>
+ }
 <button class="btn btn-primary"
-        @onclick="() => AddDummy()">Adaugă Task (demo)</button>
+		@onclick="() => AddDummy()">
+	Adaugă Task (demo)
+</button>
+
 
 @code {
-    protected override void OnInitialized()
-    {
-        // La prima intrare pe pagină încărcăm task-urile
-        Dispatcher.Dispatch(new LoadTasksAction());
-    }
+
+	// protected override void OnInitialized()
+	// {
+	// 	Console.WriteLine($"Fluxor features: {Store.Features.Count()}");
+	// 	Dispatcher.Dispatch(new LoadTasksAction());
+	// }
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (!firstRender) return;
+    await Store.InitializeAsync();            // sigur și idempotent
+	System.Diagnostics.Debug.WriteLine($"Features: {Store.Features.Count()}");
+
+    Dispatcher.Dispatch(new LoadTasksAction());
+  }
 
     // Bifare/debifare din UI -> trimitem ToggleDoneAction
     void OnToggle(TaskDto task, bool isDone)
@@ -194,6 +203,6 @@ else                                           @* afișăm tabelul *@
     void AddDummy()
     {
         var dto = new TaskDto(0, "Nou din Blazor", "Creat de pe UI", false);
-        Dispatcher.Dispatch(new AddTaskAction(dto));
+        Dispatcher.Dispatch(new CreateTaskAction(dto));
     }
 }

@@ -1,5 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Components.Routing;
 @using TaskManager.Views;
+@using Fluxor;
+
+@* <Fluxor.Blazor.Web.StoreInitializer /> *@
 
 <Router AppAssembly="@typeof(Program).Assembly">
 	<Found Context="routeData">
@@ -12,3 +15,5 @@
 		</LayoutView>
 	</NotFound>
 </Router>
+
+

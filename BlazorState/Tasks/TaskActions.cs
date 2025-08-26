@@ -14,7 +14,7 @@ namespace TaskManager.BlazorState.Tasks
 
 	//Create actions
 	//Create
-	public record CreateTaskAction(TaskDto NewTask);
+	public record CreateTaskAction(TaskDto NewItem);
 	//Success
 	public record CreateTaskSuccessAction(TaskDto Created);
 	//Failure
@@ -31,10 +31,4 @@ namespace TaskManager.BlazorState.Tasks
 
 	// Serverul a confirmat ștergerea
 	public record DeleteTaskSuccessAction(int Id);
-
-	// Cerere de creare
-	public record AddTaskAction(TaskDto NewItem);
-
-	// Serverul a confirmat crearea (cu Id real)
-	public record AddTaskSuccessAction(TaskDto Created);
 }

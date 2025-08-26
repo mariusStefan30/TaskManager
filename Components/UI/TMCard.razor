@@ -1,0 +1,23 @@
+﻿@* @using *@
+
+
+<div class="card shadow-sm mb-4">
+    @if (!string.IsNullOrWhiteSpace(Title))
+    {
+        <div class="card-header fw-semibold">@Title</div>
+    }
+    <div class="card-body">
+        @ChildContent
+    </div>
+    @if (Footer is not null)
+    {
+        <div class="card-footer bg-body">@Footer</div>
+    }
+</div>
+
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Footer { get; set; }
+}

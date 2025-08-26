@@ -1,0 +1,14 @@
+﻿<h3>TMButton</h3>
+<button class="@Css" @onclick="OnClick" disabled="@Disabled">
+	@ChildContent
+</button>
+
+@code {
+	[Parameter] public string Color { get; set; } = "primary"; // primary|secondary|danger|outline-secondary etc.
+	[Parameter] public string Size { get; set; } = "sm";       // sm|lg|""
+	[Parameter] public bool Disabled { get; set; }
+	[Parameter] public EventCallback OnClick { get; set; }
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+
+	string Css => $"btn btn-{Color} {(Size is "" ? "" : $"btn-{Size}")}";
+}

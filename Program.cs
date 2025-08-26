@@ -38,24 +38,11 @@ builder.Host.UseSerilog(); // integrate cu Host-ul
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//Code Refactor, will delete this: //Identity
-//builder.Services.AddIdentity<IdentityUser, IdentityRole>(opts =>
-//{
-//    opts.Password.RequiredLength = 6;
-//    opts.Password.RequireNonAlphanumeric = false;
-//    opts.User.RequireUniqueEmail = true;
-//})
-//.AddEntityFrameworkStores<AppDbContext>()
-//.AddDefaultTokenProviders();
+
 
 //Add JWTBearer
 var jwt = builder.Configuration.GetSection("Jwt");
-//code refactor //builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
+
 builder.Services.AddAuthentication()
 .AddJwtBearer(options =>
 {
@@ -145,39 +132,28 @@ builder.Services.AddSwaggerGen(c =>
 //Adauga serviciile Blazor
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddScoped<HttpClient>(sp =>
+builder.Services.AddScoped(sp =>
 {
-	var navigationManager = sp.GetRequiredService<NavigationManager>();
-	return new HttpClient
-	{
-		BaseAddress = new Uri(navigationManager.BaseUri)
-	};
+	var nav = sp.GetRequiredService<NavigationManager>();
+	return new HttpClient { BaseAddress = new Uri("https://localhost:5103/api/TaskItemsApi") };
 });
 
-builder.Services.AddHttpClient();
 
 // 1) Fluxor: scans the assembly for [FeatureState], [ReducerMethod], [EffectMethod]
-builder.Services.AddFluxor(options =>
+builder.Services.AddFluxor(o =>
 {
-	options.ScanAssemblies(typeof(Program).Assembly);   // scanează proiectul actual
+	o.ScanAssemblies(typeof(Program).Assembly);
 #if DEBUG
-	options.UseReduxDevTools();                         // opțional, dacă ai Redux DevTools
+	o.UseReduxDevTools();
 #endif
 });
 
-// 2) HttpClient pentru Blazor Server (dacă nu îl ai deja configurat)
-builder.Services.AddHttpClient("default", client =>
-{
-	// Baza relativă pentru apeluri "api/TaskItemsApi"
-	// Pune aici host-ul tău dacă nu rulezi pe același domeniu/port.
-	client.BaseAddress = new Uri("https://localhost:5103/");
-});
-
-// 3) Furnizăm HttpClient din factory (tokenul "default")
-builder.Services.AddScoped(sp =>
-	sp.GetRequiredService<IHttpClientFactory>().CreateClient("default"));
 
 var app = builder.Build();
+
+//// ✅ forțează inițializarea Fluxor Store
+//var store = app.Services.GetRequiredService<Fluxor.IStore>();
+//await store.InitializeAsync();
 
 // Seed initial admin account
 using (var scope = app.Services.CreateScope())
@@ -185,18 +161,13 @@ using (var scope = app.Services.CreateScope())
     await SeedData.EnsureAdminCreatedAsync(scope.ServiceProvider);
 }
 
-
-// Configure the HTTP request pipeline. //Middleware
-//if (!app.Environment.IsDevelopment())
-//{
 app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskManager API v1");
     });
 
-    //app.UseExceptionHandler("/Home/Error");
-//}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -205,7 +176,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapBlazorHub("/blazor");
-app.MapFallbackToPage("/blazor/Host");
+app.MapFallbackToPage("/blazor/_Host");
 
 app.MapRazorPages();// mapam treseele Identity UI (/Identity/Account/Login, etc)
 app.MapControllers(); //Maps your API controller too
