@@ -1,5 +1,10 @@
 # TaskManager
 
+
+<img width="1915" height="1031" alt="image" src="https://github.com/user-attachments/assets/b04f6bbd-5689-4ae0-a756-d8506d5dbbd3" />
+
+
+
 # 🗂️ TaskManager – ASP.NET Core MVC + API + xUnit
 
 **TaskManager** este o aplicație ASP.NET Core MVC + Web API pentru gestionarea task-urilor, construită ca proiect de practică personală. Scopul a fost să consolidez concepte de backend, API REST, autentificare, testare și observabilitate.
@@ -66,6 +71,9 @@
 ---
 
 ## Am mai adaugat:
+
+<img width="1908" height="1027" alt="image" src="https://github.com/user-attachments/assets/e0bdaa27-4d81-4b15-b940-4d9edb18544c" />
+
 
 ✅Funcționalitatea Blazor este integrată cu succes în aplicația ASP.NET Core MVC.
 ✅ Counter-ul Blazor funcționează și acum afișează numărul de taskuri active preluate din API.
