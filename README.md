@@ -5,151 +5,110 @@
 
 
 
-# 🗂️ TaskManager – ASP.NET Core MVC + API + xUnit
+🗂️ TaskManager – ASP.NET Core MVC + API + xUnit
 
-**TaskManager** este o aplicație ASP.NET Core MVC + Web API pentru gestionarea task-urilor, construită ca proiect de practică personală. Scopul a fost să consolidez concepte de backend, API REST, autentificare, testare și observabilitate.
+TaskManager is an ASP.NET Core MVC + Web API application for task management, built as a personal practice project. The goal was to strengthen backend concepts, REST API, authentication, testing, and observability.
 
----
+📌 Implemented Features
 
-## 📌 Funcționalități implementate
+✅ Add, edit, delete, and list tasks  
+✅ JWT authentication + roles (User, Manager, Admin)  
+✅ REST API for TaskItems (TaskItemsApiController)  
+✅ [Authorize] protection for certain routes  
+✅ Database: EF Core + SQL Server  
+✅ Integrated logger (Serilog + Console)  
+✅ Unit and integration tests (xUnit)  
 
-- ✅ Adăugare, editare, ștergere și listare taskuri
-- ✅ Autentificare JWT + roluri (User, Manager, Admin)
-- ✅ API REST pentru `TaskItems` (`TaskItemsApiController`)
-- ✅ Protecție cu `[Authorize]` pentru anumite rute
-- ✅ Bază de date: EF Core + SQL Server
-- ✅ Logger integrat (Serilog + Console)
-- ✅ Teste unitare și de integrare (xUnit)
+🧪 Testing
 
----
+✅ Unit tests (for Business Logic / Controllers)  
+✅ Integration tests (for APIs)  
+✅ Tests written with xUnit  
+⚠️ Currently, integration tests write to the real database because the CustomWebApplicationFactory implementation with InMemoryDb was temporarily suspended (incompatibility with current infrastructure).  
 
-## 🧪 Testare
+❗ The main goal was to cover end-to-end integration logic. Full database cleanup can be added later (e.g. EnsureDeleted() per test).  
 
-- ✅ Teste **unitare** (pentru Business Logic / Controllers)
-- ✅ Teste **de integrare** (pentru API-uri)
-- ✅ Teste scrise cu **xUnit**
-- ⚠️ În acest moment, testele de integrare scriu în baza de date reală deoarece implementarea `CustomWebApplicationFactory` cu InMemoryDb a fost temporar suspendată (incompatibilitate cu infrastructura actuală).
+📊 Observability
 
-> ❗ Scopul principal a fost să acopăr logica de integrare end-to-end. Cleanup-ul complet al bazei de date poate fi implementat ulterior (ex: `EnsureDeleted()` per test).
+✅ Logging with Serilog  
+- Logging in TaskItemsApiController (GET, POST, PUT, DELETE)  
+- Events logged with proper levels (Info, Warning, Error)  
 
----
+Planned future integration with:  
+- Seq (for log visualization)  
+- Application Insights (for monitoring)  
 
-## 📊 Observabilitate
+🏗️ Technologies Used
 
-- ✅ Logging cu **Serilog**
-  - Logging în `TaskItemsApiController` (GET, POST, PUT, DELETE)
-  - Evenimente logate cu nivele corecte (Info, Warning, Error)
--  Integrare ulterioară planificată cu:
-  - **Seq** (pentru vizualizare loguri)
-  - **Application Insights** (pentru monitorizare)
+- ASP.NET Core MVC 7  
+- ASP.NET Core Web API  
+- Entity Framework Core  
+- SQL Server  
+- Identity + JWT  
+- xUnit  
+- Serilog  
+- Swashbuckle (Swagger)  
+- InMemory EF Core (partially configured for testing)  
 
----
+🧠 What I Learned
 
-## 🏗️ Tehnologii folosite
-
-- ASP.NET Core MVC 7
-- ASP.NET Core Web API
-- Entity Framework Core
-- SQL Server
-- Identity + JWT
-- xUnit
-- Serilog
-- Swashbuckle (Swagger)
-- InMemory EF Core (parțial configurat pentru testare)
-
----
-
-## 🧠 Ce am învățat
-
-- Organizarea controllerelor MVC vs API
-- Configurarea `WebApplicationFactory` pentru testare
-- Lucrul cu `ILogger<T>` și înregistrarea evenimentelor
-- Crearea unei politici de autorizare (`RequireManagerOrAdmin`)
-- Seed și reset pentru baza de date
-- Diagnosticul și depanarea erorilor legate de servicii EF Core și testare
+- Organizing MVC vs API controllers  
+- Configuring WebApplicationFactory for testing  
+- Working with ILogger<T> and logging events  
+- Creating an authorization policy (RequireManagerOrAdmin)  
+- Database seeding and reset  
+- Diagnosing and debugging EF Core service/test-related errors  
 
 ---
 
-## Am mai adaugat:
+## Additional Features:
 
-<img width="1908" height="1027" alt="image" src="https://github.com/user-attachments/assets/e0bdaa27-4d81-4b15-b940-4d9edb18544c" />
+<img width="1908" height="1027" alt="image" src="https://github.com/user-attachments/assets/e0bdaa27-4d81-4b15-b940-4d9edb18544c" />  
 
+✅ Blazor functionality successfully integrated into the ASP.NET Core MVC app.  
+✅ The Blazor counter now displays the number of active tasks retrieved from the API.  
+✅ Successfully overcame obstacles such as:  
 
-✅Funcționalitatea Blazor este integrată cu succes în aplicația ASP.NET Core MVC.
-✅ Counter-ul Blazor funcționează și acum afișează numărul de taskuri active preluate din API.
-✅ Depășit cu succes obstacole precum:
-
-Rutarea către _Host
-
-Injectarea corectă a HttpClient
-
-Erori de binding (@DefaultLayout)
-
-Configurarea MainLayout
-
-Consumarea API-ului
-
-
-## Am mai adaugat:
-
-(State Management) și să o adăugăm peste ce ai deja în TaskManager. Pentru Blazor, cea mai sănătoasă cale de a învăța Flux/Redux-style este Fluxor (port Redux pentru Blazor). Îți dau un setup mic, curat, care:
-
-ține lista de task-uri într-un store global
-
-face fetch din API prin effects
-
-sincronizează crea/edita/șterge/Toggle IsDone** dintr-un singur loc
-
-componentele Blazor doar observă store-ul și trimit actions (fără HttpClient direct)
-
----
-## Am mai adaugat:
-
-
-Bootstrap în proiect, facem un UI curat + componente mici reutilizabile (fără tooling nou):
-
-Navbar & layout unificat , modificat Shared/MainLayout.razor.
-
-Mini-bibliotecă de componente cu TMCard, TMButton, ConfirmDialog, TaskRow.
-
-Listă cu aspect “card” + componente in TaskList si pagina de “Add” în card.
+- Routing to _Host  
+- Proper HttpClient injection  
+- Binding errors (@DefaultLayout)  
+- MainLayout configuration  
+- Consuming the API  
 
 ---
 
-## ⚙️ Rulare locală
+## Additional Features:
 
-1. Clonează proiectul:
-   ```bash
-   git clone https://github.com/mariusStefan30/TaskManager.git
+(State Management) added on top of TaskManager.  
+For Blazor, the healthiest way to learn Flux/Redux-style state management is Fluxor (Redux port for Blazor). Here’s a small, clean setup that:  
 
+- keeps the task list in a global store  
+- fetches data from the API via effects  
+- synchronizes create/edit/delete/Toggle IsDone** in a single place  
+- Blazor components only observe the store and dispatch actions (no direct HttpClient calls)  
 
+---
 
-   dotnet run
+## Additional Features:
 
+Bootstrap integrated into the project for a clean UI + reusable small components (no extra tooling):  
 
+- Unified Navbar & layout, modified Shared/MainLayout.razor.  
+- Mini component library with TMCard, TMButton, ConfirmDialog, TaskRow.  
+- Task list with a “card” layout + components in TaskList and “Add” page as a card.  
 
+---
 
-   dotnet test
+⚙️ Run Locally
 
+Clone the project:  
 
+```bash
+git clone https://github.com/mariusStefan30/TaskManager.git
 
+dotnet run
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+dotnet test
 
 
 
@@ -169,7 +128,28 @@ Listă cu aspect “card” + componente in TaskList si pagina de “Add” în 
 
 
 
-Iată un exempliu detaliat de **definire a obiectivelor SMART** pentru planul tău de upskilling:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Exempliu detaliat de **definire a obiectivelor SMART** pentru planul de upskilling:
 
 ---
 
